@@ -3,9 +3,7 @@
 namespace Kronas\SmppClientBundle\SmppCore;
 
 use Kronas\SmppClientBundle\Exception\SmppException;
-use Kronas\SmppClientBundle\Transport\SocketTransport;
 use Kronas\SmppClientBundle\SMPP;
-use Kronas\SmppClientBundle\SmppCore\SmppTag;
 use Kronas\SmppClientBundle\Transport\TransportInterface;
 use RuntimeException;
 
@@ -34,7 +32,6 @@ use RuntimeException;
 class SmppClient
 {
     // SMPP bind parameters
-    public static $systemType = "WWW";
     public static $interfaceVersion = 0x34;
     public static $addressTon = 0;
     public static $addressNpi = 0;
@@ -113,11 +110,12 @@ class SmppClient
      * Binds the receiver. One object can be bound only as receiver or only as trancmitter.
      *
      * @param string $login - ESME system_id
-     * @param string $pass  - ESME password
+     * @param string $pass - ESME password
      *
+     * @param $systemType
      * @return mixed
      */
-    public function bindReceiver($login, $pass)
+    public function bindReceiver($login, $pass, $systemType)
     {
         if (!$this->transport->isOpen()) {
             return false;
@@ -126,7 +124,7 @@ class SmppClient
             call_user_func($this->debugHandler, 'Binding receiver...');
         }
 
-        $response = $this->_bind($login, $pass, SMPP::BIND_RECEIVER);
+        $response = $this->_bind($login, $pass, $systemType, SMPP::BIND_RECEIVER);
 
         if ($this->debug) {
             call_user_func($this->debugHandler, "Binding status  : ".$response->status);
@@ -142,11 +140,12 @@ class SmppClient
      * Binds the transmitter. One object can be bound only as receiver or only as trancmitter.
      *
      * @param string $login - ESME system_id
-     * @param string $pass  - ESME password
+     * @param string $pass - ESME password
      *
+     * @param $systemType
      * @return mixed
      */
-    public function bindTransmitter($login, $pass)
+    public function bindTransmitter($login, $pass, $systemType)
     {
         if (!$this->transport->isOpen()) {
             return false;
@@ -155,7 +154,7 @@ class SmppClient
             call_user_func($this->debugHandler, 'Binding transmitter...');
         }
 
-        $response = $this->_bind($login, $pass, SMPP::BIND_TRANSMITTER);
+        $response = $this->_bind($login, $pass, $systemType, SMPP::BIND_TRANSMITTER);
 
         if ($this->debug) {
             call_user_func($this->debugHandler, "Binding status  : ".$response->status);
@@ -618,7 +617,7 @@ class SmppClient
      *
      * @throws SmppException
      */
-    protected function _bind($login, $pass, $commandId)
+    protected function _bind($login, $pass, $systemType, $commandId)
     {
         // Make PDU body
         $pduBody = pack(

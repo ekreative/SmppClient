@@ -18,6 +18,7 @@ class SmppTransmitter
     private $login;
     private $password;
     private $signature;
+    private $systemType;
     private $debug;
 
     /** @var TransportInterface */
@@ -26,18 +27,20 @@ class SmppTransmitter
     private $smpp;
 
     /**
-     * @param array  $transportParamters
+     * @param array $transportParamters
      * @param string $login
      * @param string $password
      * @param string $signature
-     * @param array  $debug
+     * @param string $systemType
+     * @param array $debug
      */
-    public function __construct(array $transportParamters, $login, $password, $signature, array $debug)
+    public function __construct(array $transportParamters, $login, $password, $signature, $systemType,  array $debug)
     {
         $this->transportParamters = $transportParamters;
         $this->login = $login;
         $this->password = $password;
         $this->signature = $signature;
+        $this->systemType = $systemType;
         $this->debug = $debug;
     }
 
@@ -45,7 +48,7 @@ class SmppTransmitter
      * @param string $to
      * @param string $message
      *
-     * @return string|void`
+     * @return string
      */
     public function send($to, $message)
     {
@@ -71,7 +74,7 @@ class SmppTransmitter
         $this->smpp->debug = $this->debug['smpp'];
 
         $this->transport->open();
-        $this->smpp->bindTransmitter($this->login, $this->password);
+        $this->smpp->bindTransmitter($this->login, $this->password, $this->systemType);
     }
 
     private function closeSmppConnection()
