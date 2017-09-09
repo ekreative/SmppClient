@@ -1,6 +1,6 @@
 <?php
 
-namespace Kronas\SmppClientBundle\Service;
+namespace Kronas\SmppClientBundle\Transmitter;
 
 use Kronas\SmppClientBundle\Encoder\GsmEncoder;
 use Kronas\SmppClientBundle\SMPP;
