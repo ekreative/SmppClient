@@ -628,9 +628,9 @@ class SmppClient
         $pduBody = pack(
             'a'.(strlen($login) + 1).
             'a'.(strlen($pass) + 1).
-            'a'.(strlen(self::$systemType) + 1).
+            'a'.(strlen($systemType) + 1).
             'CCCa'.(strlen(self::$addressRange) + 1),
-            $login, $pass, self::$systemType,
+            $login, $pass, $systemType,
             self::$interfaceVersion, self::$addressTon,
             self::$addressNpi, self::$addressRange
         );
