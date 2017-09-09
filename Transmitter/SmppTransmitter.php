@@ -38,7 +38,7 @@ class SmppTransmitter
      * @param array              $debug
      * @param EncoderInterface[] $encoders
      */
-    public function __construct(array $transportParameters, $login, $password, $signature, $systemType, array $debug, $encoders)
+    public function __construct(array $transportParameters, $login, $password, $signature, $systemType, array $debug, $encoders = [])
     {
         $this->transportParameters = $transportParameters;
         $this->login = $login;
