@@ -22,6 +22,6 @@ class CyrillicEncoder implements EncoderInterface
      */
     public static function encode($string)
     {
-        return mb_convert_encoding($string, 'UTF-8', 'ISO-8859-5');
+        return mb_convert_encoding($string, 'ISO-8859-5', 'UTF-8');
     }
 }
