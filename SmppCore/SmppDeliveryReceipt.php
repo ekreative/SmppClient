@@ -2,8 +2,6 @@
 
 namespace Kronas\SmppClientBundle\SmppCore;
 
-use Kronas\SmppClientBundle\SmppCore\SmppSms;
-
 /**
  * An extension of a SMS, with data embedded into the message part of the SMS.
  *
@@ -22,7 +20,7 @@ class SmppDeliveryReceipt extends SmppSms
 
     /**
      * Parse a delivery receipt formatted as specified in SMPP v3.4 - Appendix B
-     * It accepts all chars except space as the message id
+     * It accepts all chars except space as the message id.
      *
      * @throws \InvalidArgumentException
      */

@@ -5,12 +5,12 @@ namespace Kronas\SmppClientBundle\Transmitter;
 use Kronas\SmppClientBundle\Encoder\GsmEncoder;
 use Kronas\SmppClientBundle\SMPP;
 use Kronas\SmppClientBundle\SmppCore\SmppAddress;
+use Kronas\SmppClientBundle\SmppCore\SmppClient;
 use Kronas\SmppClientBundle\Transport\SocketTransport;
 use Kronas\SmppClientBundle\Transport\TransportInterface;
-use Kronas\SmppClientBundle\SmppCore\SmppClient;
 
 /**
- * Class SmppWrapper
+ * Class SmppWrapper.
  */
 class SmppTransmitter
 {
@@ -27,14 +27,14 @@ class SmppTransmitter
     private $smpp;
 
     /**
-     * @param array $transportParamters
+     * @param array  $transportParamters
      * @param string $login
      * @param string $password
      * @param string $signature
      * @param string $systemType
-     * @param array $debug
+     * @param array  $debug
      */
-    public function __construct(array $transportParamters, $login, $password, $signature, $systemType,  array $debug)
+    public function __construct(array $transportParamters, $login, $password, $signature, $systemType, array $debug)
     {
         $this->transportParamters = $transportParamters;
         $this->login = $login;
@@ -82,4 +82,4 @@ class SmppTransmitter
         $this->smpp->close();
         $this->transport->close();
     }
-} 
+}

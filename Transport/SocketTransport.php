@@ -2,9 +2,8 @@
 
 namespace Kronas\SmppClientBundle\Transport;
 
-use \ArrayIterator;
-use \InvalidArgumentException;
-
+use ArrayIterator;
+use InvalidArgumentException;
 use Kronas\SmppClientBundle\Exception\SocketTransportException;
 
 /**
@@ -12,10 +11,10 @@ use Kronas\SmppClientBundle\Exception\SocketTransportException;
  * Supports connection pools and IPv6 in addition to providing a few public methods to make life easier.
  * It's primary purpose is long running connections, since it don't support socket re-use, ip-blacklisting, etc.
  * It assumes a blocking/synchronous architecture, and will block when reading or writing, but will enforce timeouts.
- * 
+ *
  * Copyright (C) 2011 OnlineCity
  * Licensed under the MIT license, which can be read at: http://www.opensource.org/licenses/mit-license.php
- * 
+ *
  * @author OnlineCity <hd@onlinecity.dk>
  */
 class SocketTransport implements TransportInterface
@@ -28,7 +27,7 @@ class SocketTransport implements TransportInterface
 
     protected static $defaultSendTimeout = 100;
     protected static $defaultRecvTimeout = 750;
-    public static $defaultDebug=false;
+    public static $defaultDebug = false;
 
     public static $forceIpv6 = false;
     public static $forceIpv4 = false;
@@ -37,10 +36,10 @@ class SocketTransport implements TransportInterface
     /**
      * Construct a new socket for this transport to use.
      *
-     * @param array   $hosts        list of hosts to try.
-     * @param mixed   $ports        list of ports to try, or a single common port
-     * @param boolean $persist      use persistent sockets
-     * @param mixed   $debugHandler callback for debug info
+     * @param array $hosts        list of hosts to try
+     * @param mixed $ports        list of ports to try, or a single common port
+     * @param bool  $persist      use persistent sockets
+     * @param mixed $debugHandler callback for debug info
      */
     public function __construct(array $hosts, $ports, $persist = false, $debugHandler = null)
     {
@@ -48,9 +47,9 @@ class SocketTransport implements TransportInterface
         $this->debugHandler = $debugHandler ? $debugHandler : 'error_log';
 
         // Deal with optional port
-        $h = array();
+        $h = [];
         foreach ($hosts as $key => $host) {
-            $h[] = array($host, is_array($ports) ? $ports[$key] : $ports);
+            $h[] = [$host, is_array($ports) ? $ports[$key] : $ports];
         }
         if (self::$randomHost) {
             shuffle($h);
@@ -63,7 +62,7 @@ class SocketTransport implements TransportInterface
     /**
      * Resolve the hostnames into IPs, and sort them into IPv4 or IPv6 groups.
      * If using DNS hostnames, and all lookups fail, a InvalidArgumentException is thrown.
-     * 
+     *
      * @param array $hosts
      *
      * @throws InvalidArgumentException
@@ -72,9 +71,9 @@ class SocketTransport implements TransportInterface
     {
         $i = 0;
         foreach ($hosts as $host) {
-            list($hostname,$port) = $host;
-            $ip4s = array();
-            $ip6s = array();
+            list($hostname, $port) = $host;
+            $ip4s = [];
+            $ip6s = [];
             if (preg_match('/^([12]?[0-9]?[0-9]\.){3}([12]?[0-9]?[0-9])$/', $hostname)) {
                 // IPv4 address
                 $ip4s[] = $hostname;
@@ -138,14 +137,14 @@ class SocketTransport implements TransportInterface
             }
 
             if ($this->debug) {
-                $i += count($ip4s)+count($ip6s);
+                $i += count($ip4s) + count($ip6s);
             }
 
             // Add results to pool
-            $this->hosts[] = array($hostname,$port,$ip6s,$ip4s);
+            $this->hosts[] = [$hostname, $port, $ip6s, $ip4s];
         }
         if ($this->debug) {
-            call_user_func($this->debugHandler, "Built connection pool of ".count($this->hosts)." host(s) with $i ip(s) in total");
+            call_user_func($this->debugHandler, 'Built connection pool of '.count($this->hosts)." host(s) with $i ip(s) in total");
         }
         if (empty($this->hosts)) {
             throw new InvalidArgumentException('No valid hosts was found');
@@ -154,9 +153,9 @@ class SocketTransport implements TransportInterface
 
     /**
      * Get a reference to the socket.
-     * You should use the public functions rather than the socket directly
+     * You should use the public functions rather than the socket directly.
      *
-     * @return Resource
+     * @return resource
      */
     public function getSocket()
     {
@@ -164,28 +163,28 @@ class SocketTransport implements TransportInterface
     }
 
     /**
-     * Get an arbitrary option
-     * 
-     * @param integer $option
-     * @param integer $lvl
+     * Get an arbitrary option.
      *
-     * @return mixed the value of the given option, or <b>FALSE</b> on errors.
+     * @param int $option
+     * @param int $lvl
+     *
+     * @return mixed the value of the given option, or <b>FALSE</b> on errors
      */
-    public function getSocketOption($option, $lvl=SOL_SOCKET)
+    public function getSocketOption($option, $lvl = SOL_SOCKET)
     {
         return socket_get_option($this->socket, $lvl, $option);
     }
 
     /**
-     * Set an arbitrary option
-     * 
-     * @param integer   $option
-     * @param mixed     $value
-     * @param integer   $lvl
+     * Set an arbitrary option.
      *
-     * @return bool <b>TRUE</b> on success or <b>FALSE</b> on failure.
+     * @param int   $option
+     * @param mixed $value
+     * @param int   $lvl
+     *
+     * @return bool <b>TRUE</b> on success or <b>FALSE</b> on failure
      */
-    public function setSocketOption($option, $value, $lvl=SOL_SOCKET)
+    public function setSocketOption($option, $value, $lvl = SOL_SOCKET)
     {
         return socket_set_option($this->socket, $lvl, $option, $value);
     }
@@ -194,9 +193,9 @@ class SocketTransport implements TransportInterface
      * Sets the send timeout.
      * Returns true on success, or false.
      *
-     * @param int $timeout Timeout in milliseconds.
+     * @param int $timeout timeout in milliseconds
      *
-     * @return boolean
+     * @return bool
      */
     public function setSendTimeout($timeout)
     {
@@ -215,9 +214,9 @@ class SocketTransport implements TransportInterface
      * Sets the receive timeout.
      * Returns true on success, or false.
      *
-     * @param int $timeout Timeout in milliseconds.
+     * @param int $timeout timeout in milliseconds
      *
-     * @return boolean
+     * @return bool
      */
     public function setRecvTimeout($timeout)
     {
@@ -235,11 +234,11 @@ class SocketTransport implements TransportInterface
     /**
      * Check if the socket is constructed, and there are no exceptions on it
      * Returns false if it's closed.
-     * Throws SocketTransportException is state could not be ascertained
+     * Throws SocketTransportException is state could not be ascertained.
      *
      * @throws SocketTransportException
      *
-     * @return boolean
+     * @return bool
      */
     public function isOpen()
     {
@@ -248,7 +247,7 @@ class SocketTransport implements TransportInterface
         }
         $r = null;
         $w = null;
-        $e = array($this->socket);
+        $e = [$this->socket];
         $res = socket_select($r, $w, $e, 0);
         if ($res === false) {
             throw new SocketTransportException('Could not examine socket; '.socket_strerror(socket_last_error()), socket_last_error());
@@ -261,9 +260,9 @@ class SocketTransport implements TransportInterface
     }
 
     /**
-     * Convert a milliseconds into a socket sec+usec array
+     * Convert a milliseconds into a socket sec+usec array.
      *
-     * @param integer $millisec
+     * @param int $millisec
      *
      * @return array
      */
@@ -271,14 +270,14 @@ class SocketTransport implements TransportInterface
     {
         $usec = $millisec * 1000;
 
-        return array('sec' => floor($usec/1000000), 'usec' => $usec % 1000000);
+        return ['sec' => floor($usec / 1000000), 'usec' => $usec % 1000000];
     }
 
     /**
      * Open the socket, trying to connect to each host in succession.
      * This will prefer IPv6 connections if forceIpv4 is not enabled.
      * If all hosts fail, a SocketTransportException is thrown.
-     * 
+     *
      * @throws SocketTransportException
      */
     public function open()
@@ -352,25 +351,27 @@ class SocketTransport implements TransportInterface
 
     /**
      * Do a clean shutdown of the socket.
-     * Since we don't reuse sockets, we can just close and forget about it, 
+     * Since we don't reuse sockets, we can just close and forget about it,
      * but we choose to wait (linger) for the last data to come through.
      */
     public function close()
     {
-        $arrOpt = array('l_onoff' => 1, 'l_linger' => 1);
+        $arrOpt = ['l_onoff' => 1, 'l_linger' => 1];
         @socket_set_block($this->socket);
         @socket_set_option($this->socket, SOL_SOCKET, SO_LINGER, $arrOpt);
         @socket_close($this->socket);
     }
 
     /**
-     * Check if there is data waiting for us on the wire
-     * @return boolean
+     * Check if there is data waiting for us on the wire.
+     *
+     * @return bool
+     *
      * @throws SocketTransportException
      */
     public function hasData()
     {
-        $r = array($this->socket);
+        $r = [$this->socket];
         $w = null;
         $e = null;
         $res = socket_select($r, $w, $e, 0);
@@ -391,9 +392,10 @@ class SocketTransport implements TransportInterface
      * Returns false on timeout (technically EAGAIN error).
      * Throws SocketTransportException if data could not be read.
      *
-     * @param integer $length
+     * @param int $length
      *
      * @return mixed
+     *
      * @throws SocketTransportException
      */
     public function read($length)
@@ -414,21 +416,22 @@ class SocketTransport implements TransportInterface
 
     /**
      * Read all the bytes, and block until they are read.
-     * Timeout throws SocketTransportException
+     * Timeout throws SocketTransportException.
      *
-     * @param integer $length
+     * @param int $length
      *
      * @return null|string
+     *
      * @throws \Kronas\SmppClientBundle\Exception\SocketTransportException
      */
     public function readAll($length)
     {
-        $d = "";
+        $d = '';
         $r = 0;
         $readTimeout = socket_get_option($this->socket, SOL_SOCKET, SO_RCVTIMEO);
         while ($r < $length) {
             $buf = '';
-            $r += socket_recv($this->socket, $buf, $length-$r, MSG_DONTWAIT);
+            $r += socket_recv($this->socket, $buf, $length - $r, MSG_DONTWAIT);
             if ($r === false) {
                 throw new SocketTransportException('Could not read '.$length.' bytes from socket; '.socket_strerror(socket_last_error()), socket_last_error());
             }
@@ -438,9 +441,9 @@ class SocketTransport implements TransportInterface
             }
 
             // wait for data to be available, up to timeout
-            $r = array($this->socket);
+            $r = [$this->socket];
             $w = null;
-            $e = array($this->socket);
+            $e = [$this->socket];
             $res = socket_select($r, $w, $e, $readTimeout['sec'], $readTimeout['usec']);
 
             // check
@@ -460,10 +463,10 @@ class SocketTransport implements TransportInterface
 
     /**
      * Write (all) data to the socket.
-     * Timeout throws SocketTransportException
+     * Timeout throws SocketTransportException.
      *
-     * @param mixed   $buffer
-     * @param integer $length
+     * @param mixed $buffer
+     * @param int   $length
      *
      * @throws \Kronas\SmppClientBundle\Exception\SocketTransportException
      */
@@ -472,7 +475,7 @@ class SocketTransport implements TransportInterface
         $r = $length;
         $writeTimeout = socket_get_option($this->socket, SOL_SOCKET, SO_SNDTIMEO);
 
-        while ($r>0) {
+        while ($r > 0) {
             $wrote = socket_write($this->socket, $buffer, $r);
             if ($wrote === false) {
                 throw new SocketTransportException('Could not write '.$length.' bytes to socket; '.socket_strerror(socket_last_error()), socket_last_error());
@@ -486,8 +489,8 @@ class SocketTransport implements TransportInterface
 
             // wait for the socket to accept more data, up to timeout
             $r = null;
-            $w = array($this->socket);
-            $e = array($this->socket);
+            $w = [$this->socket];
+            $e = [$this->socket];
             $res = socket_select($r, $w, $e, $writeTimeout['sec'], $writeTimeout['usec']);
 
             // check

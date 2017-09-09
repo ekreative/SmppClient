@@ -5,7 +5,7 @@ namespace Kronas\SmppClientBundle\SmppCore;
 use Kronas\SmppClientBundle\SMPP;
 
 /**
- * Primitive class for encapsulating smpp addresses
+ * Primitive class for encapsulating smpp addresses.
  *
  * @author OnlineCity <hd@onlinecity.dk>
  */
@@ -16,15 +16,15 @@ class SmppAddress
     public $value;
 
     /**
-     * Construct a new object of class Address
+     * Construct a new object of class Address.
      *
-     * @param string  $value
-     * @param integer $ton
-     * @param integer $npi
+     * @param string $value
+     * @param int    $ton
+     * @param int    $npi
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($value, $ton=SMPP::TON_UNKNOWN, $npi=SMPP::NPI_UNKNOWN)
+    public function __construct($value, $ton = SMPP::TON_UNKNOWN, $npi = SMPP::NPI_UNKNOWN)
     {
         // Address-Value field may contain 10 octets (12-length-type), see 3GPP TS 23.040 v 9.3.0 - section 9.1.2.5 page 46.
         if ($ton == SMPP::TON_ALPHANUMERIC && strlen($value) > 11) {

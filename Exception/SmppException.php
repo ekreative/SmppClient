@@ -3,9 +3,8 @@
 namespace Kronas\SmppClientBundle\Exception;
 
 /**
- * SMPP Exception
+ * SMPP Exception.
  */
 class SmppException extends \RuntimeException
 {
-
 }
