@@ -11,7 +11,7 @@ namespace Kronas\SmppClientBundle\Encoder;
  *
  * @author OnlineCity <hd@onlinecity.dk>
  */
-class GsmEncoder
+class GsmEncoder implements EncoderInterface
 {
     /**
      * Encode an UTF-8 string into GSM 03.38
@@ -25,7 +25,7 @@ class GsmEncoder
      *
      * @return string
      */
-    public static function utf8_to_gsm0338($string)
+    public static function encode($string)
     {
         $dict = [
             '@' => "\x00",

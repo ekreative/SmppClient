@@ -2,6 +2,8 @@
 
 namespace Kronas\SmppClientBundle\Transmitter;
 
+use Kronas\SmppClientBundle\Encoder\CyrillicEncoder;
+use Kronas\SmppClientBundle\Encoder\EncoderInterface;
 use Kronas\SmppClientBundle\Encoder\GsmEncoder;
 use Kronas\SmppClientBundle\SMPP;
 use Kronas\SmppClientBundle\SmppCore\SmppAddress;
@@ -14,12 +16,13 @@ use Kronas\SmppClientBundle\Transport\TransportInterface;
  */
 class SmppTransmitter
 {
-    private $transportParamters;
+    private $transportParameters;
     private $login;
     private $password;
     private $signature;
     private $systemType;
     private $debug;
+    private $encoders;
 
     /** @var TransportInterface */
     private $transport;
@@ -27,37 +30,46 @@ class SmppTransmitter
     private $smpp;
 
     /**
-     * @param array  $transportParamters
-     * @param string $login
-     * @param string $password
-     * @param string $signature
-     * @param string $systemType
-     * @param array  $debug
+     * @param array              $transportParameters
+     * @param string             $login
+     * @param string             $password
+     * @param string             $signature
+     * @param string             $systemType
+     * @param array              $debug
+     * @param EncoderInterface[] $encoders
      */
-    public function __construct(array $transportParamters, $login, $password, $signature, $systemType, array $debug)
+    public function __construct(array $transportParameters, $login, $password, $signature, $systemType, array $debug, $encoders)
     {
-        $this->transportParamters = $transportParamters;
+        $this->transportParameters = $transportParameters;
         $this->login = $login;
         $this->password = $password;
         $this->signature = $signature;
         $this->systemType = $systemType;
         $this->debug = $debug;
+        $this->encoders = array_merge([
+            'gsm' => GsmEncoder::class,
+            'cyr' => CyrillicEncoder::class,
+        ], $encoders);
     }
 
     /**
      * @param string $to
      * @param string $message
+     * @param string $encoderName
+     * @param int    $dataCoding
      *
      * @return string
      */
-    public function send($to, $message)
+    public function send($to, $message, $encoderName, $dataCoding)
     {
-        $message = GsmEncoder::utf8_to_gsm0338($message);
+        /** @var EncoderInterface $encoder */
+        $encoder = $this->encoders[$encoderName];
+        $message = $encoder::encode($message);
         $from = new SmppAddress($this->signature, SMPP::TON_ALPHANUMERIC);
         $to = new SmppAddress(intval($to), SMPP::TON_INTERNATIONAL, SMPP::NPI_E164);
 
         $this->openSmppConnection();
-        $messageId = $this->smpp->sendSMS($from, $to, $message);
+        $messageId = $this->smpp->sendSMS($from, $to, $message, null, $dataCoding);
         $this->closeSmppConnection();
 
         return $messageId;
@@ -65,8 +77,8 @@ class SmppTransmitter
 
     private function openSmppConnection()
     {
-        $this->transport = new SocketTransport($this->transportParamters[0], $this->transportParamters[1]);
-        $this->transport->setSendTimeout($this->transportParamters[2]);
+        $this->transport = new SocketTransport($this->transportParameters[0], $this->transportParameters[1]);
+        $this->transport->setSendTimeout($this->transportParameters[2]);
 
         $this->smpp = new SmppClient($this->transport);
 
