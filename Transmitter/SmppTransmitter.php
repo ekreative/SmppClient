@@ -5,6 +5,7 @@ namespace Kronas\SmppClientBundle\Transmitter;
 use Kronas\SmppClientBundle\Encoder\CyrillicEncoder;
 use Kronas\SmppClientBundle\Encoder\EncoderInterface;
 use Kronas\SmppClientBundle\Encoder\GsmEncoder;
+use Kronas\SmppClientBundle\Exception\InvalidEncoderException;
 use Kronas\SmppClientBundle\SMPP;
 use Kronas\SmppClientBundle\SmppCore\SmppAddress;
 use Kronas\SmppClientBundle\SmppCore\SmppClient;
@@ -46,10 +47,7 @@ class SmppTransmitter
         $this->signature = $signature;
         $this->systemType = $systemType;
         $this->debug = $debug;
-        $this->encoders = array_merge([
-            'gsm' => GsmEncoder::class,
-            'cyr' => CyrillicEncoder::class,
-        ], $encoders);
+        $this->addEncoders($encoders);
     }
 
     /**
@@ -93,5 +91,23 @@ class SmppTransmitter
     {
         $this->smpp->close();
         $this->transport->close();
+    }
+
+    private function addEncoders(array $encoders)
+    {
+        //Add default encoders
+        $this->encoders = [
+            'gsm' => GsmEncoder::class,
+            'cyr' => CyrillicEncoder::class,
+        ];
+
+        //Add other encoders
+        foreach ($encoders as $encoder) {
+            if ($encoder instanceof EncoderInterface) {
+                $this->encoders[] = $encoder;
+            } else {
+                throw new InvalidEncoderException('Encoders must imlement EncoderInterface.');
+            }
+        }
     }
 }
