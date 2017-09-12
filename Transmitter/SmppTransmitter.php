@@ -17,31 +17,69 @@ use Kronas\SmppClientBundle\Transport\TransportInterface;
  */
 class SmppTransmitter
 {
-    private $transportParameters;
+    /**
+     * @var array
+     */
+    private $hosts;
+    /**
+     * @var array
+     */
+    private $ports;
+    /**
+     * @var int
+     */
+    private $timeout;
+    /**
+     * @var string
+     */
     private $login;
+    /**
+     * @var string
+     */
     private $password;
+    /**
+     * @var string
+     */
     private $signature;
+    /**
+     * @var string
+     */
     private $systemType;
+    /**
+     * @var array
+     */
     private $debug;
+    /**
+     * @var array
+     */
     private $encoders;
 
-    /** @var TransportInterface */
+    /**
+     * @var TransportInterface
+     */
     private $transport;
-    /** @var SmppClient */
+
+    /**
+     * @var SmppClient
+     */
     private $smpp;
 
     /**
-     * @param array              $transportParameters
-     * @param string             $login
-     * @param string             $password
-     * @param string             $signature
-     * @param string             $systemType
-     * @param array              $debug
+     * @param array $hosts
+     * @param array $ports
+     * @param $timeout
+     * @param string $login
+     * @param string $password
+     * @param string $signature
+     * @param string $systemType
+     * @param array $debug
      * @param EncoderInterface[] $encoders
      */
-    public function __construct(array $transportParameters, $login, $password, $signature, $systemType, array $debug, $encoders = [])
+    public function __construct(array $hosts, array $ports, $timeout, $login, $password, $signature, $systemType, array $debug, array $encoders = [])
     {
-        $this->transportParameters = $transportParameters;
+        $this->hosts = $hosts;
+        $this->ports = $ports;
+        $this->timeout = $timeout;
         $this->login = $login;
         $this->password = $password;
         $this->signature = $signature;
@@ -75,8 +113,8 @@ class SmppTransmitter
 
     private function openSmppConnection()
     {
-        $this->transport = new SocketTransport($this->transportParameters[0], $this->transportParameters[1]);
-        $this->transport->setSendTimeout($this->transportParameters[2]);
+        $this->transport = new SocketTransport($this->hosts, $this->ports);
+        $this->transport->setSendTimeout($this->timeout);
 
         $this->smpp = new SmppClient($this->transport);
 
