@@ -22,6 +22,9 @@ class CyrillicEncoder implements EncoderInterface
      */
     public static function encode($string)
     {
-        return mb_convert_encoding($string, 'ISO-8859-5', 'UTF-8');
+//        return mb_convert_encoding($string, 'ISO-8859-5', 'UTF-8');
+        // For some reason SMSC such as BSG world accepts UTF-8 for Cyrillic so no encoding is needed
+        return $string;
+
     }
 }
