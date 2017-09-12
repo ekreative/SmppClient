@@ -14,7 +14,7 @@ namespace Kronas\SmppClientBundle\Encoder;
 class CyrillicEncoder implements EncoderInterface
 {
     /**
-     * Encode an UTF-8 string into ISO-8859-5.
+     * Encode an UTF-8 string into UCS-2BE.
      *
      * @param string $string
      *
@@ -22,9 +22,6 @@ class CyrillicEncoder implements EncoderInterface
      */
     public static function encode($string)
     {
-//        return mb_convert_encoding($string, 'ISO-8859-5', 'UTF-8');
-        // For some reason SMSC such as BSG world accepts UTF-8 for Cyrillic so no encoding is needed
-        return $string;
-
+        return mb_convert_encoding($string, 'UCS-2BE', 'UTF-8');
     }
 }
