@@ -5,6 +5,7 @@ namespace Kronas\SmppClientBundle\SmppCore;
 use Kronas\SmppClientBundle\Exception\SmppException;
 use Kronas\SmppClientBundle\SMPP;
 use Kronas\SmppClientBundle\Transport\TransportInterface;
+use Kronas\SmppClientBundle\Transport\SocketTransport;
 use RuntimeException;
 
 /**
@@ -82,7 +83,11 @@ class SmppClient
 
     protected $pduQueue;
 
+    /**
+     * @var SocketTransport
+     */
     protected $transport;
+
     protected $debugHandler;
 
     // Used for reconnect
@@ -465,7 +470,12 @@ class SmppClient
             }
         }
 
-        return $this->submit_sm($from, $to, $shortMessage, $tags, $dataCoding);
+        $messageId = $this->submit_sm($from, $to, $shortMessage, $tags, $dataCoding);
+
+        call_user_func($this->debugHandler, 'Timestamp: '.time());
+        call_user_func($this->debugHandler, 'Message ID: '.$messageId);
+
+        return $messageId;
     }
 
     /**
