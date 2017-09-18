@@ -8,6 +8,7 @@ final class CyrillicEncoderTest extends TestCase
 {
     /**
      * @dataProvider getSampleText
+     *
      * @param $string
      */
     public function testEncode($string)
@@ -19,10 +20,11 @@ final class CyrillicEncoderTest extends TestCase
         $this->assertEquals($string, $decodedString);
     }
 
-    public function getSampleText() {
+    public function getSampleText()
+    {
         return [
             ['This is the test message'],
-            ['Это тестовое сообщение']
+            ['Это тестовое сообщение'],
         ];
     }
 }

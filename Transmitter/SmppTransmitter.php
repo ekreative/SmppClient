@@ -68,11 +68,11 @@ class SmppTransmitter
      * @param array $hosts
      * @param array $ports
      * @param $timeout
-     * @param string $login
-     * @param string $password
-     * @param string $signature
-     * @param string $systemType
-     * @param array $debug
+     * @param string             $login
+     * @param string             $password
+     * @param string             $signature
+     * @param string             $systemType
+     * @param array              $debug
      * @param EncoderInterface[] $encoders
      */
     public function __construct(array $hosts, array $ports, $timeout, $login, $password, $signature, $systemType, array $debug, array $encoders = [])

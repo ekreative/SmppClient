@@ -4,8 +4,8 @@ namespace Kronas\SmppClientBundle\SmppCore;
 
 use Kronas\SmppClientBundle\Exception\SmppException;
 use Kronas\SmppClientBundle\SMPP;
-use Kronas\SmppClientBundle\Transport\TransportInterface;
 use Kronas\SmppClientBundle\Transport\SocketTransport;
+use Kronas\SmppClientBundle\Transport\TransportInterface;
 use RuntimeException;
 
 /**
@@ -94,6 +94,7 @@ class SmppClient
     protected $mode;
     private $login;
     private $pass;
+    private $systemType;
 
     protected $sequenceNumber;
     protected $sarMsgRefNum;
@@ -142,6 +143,7 @@ class SmppClient
         $this->mode = 'receiver';
         $this->login = $login;
         $this->pass = $pass;
+        $this->systemType = $systemType;
 
         return null;
     }
@@ -172,6 +174,7 @@ class SmppClient
         $this->mode = 'transmitter';
         $this->login = $login;
         $this->pass = $pass;
+        $this->systemType = $systemType;
 
         return null;
     }
@@ -301,7 +304,7 @@ class SmppClient
      * Read one SMS from SMSC. Can be executed only after bindReceiver() call.
      * This method bloks. Method returns on socket timeout or enquire_link signal from SMSC.
      *
-     * @return array|false associative array or false when reading failed or no more sms
+     * @return SmppDeliveryReceipt|SmppSms|array|false associative array or false when reading failed or no more sms
      */
     public function readSMS()
     {
@@ -624,9 +627,10 @@ class SmppClient
     /**
      * Binds the socket and opens the session on SMSC.
      *
-     * @param string $login     - ESME system_id
-     * @param string $pass      - ESME password
-     * @param mixed  $commandId Command ID
+     * @param string $login      - ESME system_id
+     * @param string $pass       - ESME password
+     * @param string $systemType - ESME system_type
+     * @param mixed  $commandId  Command ID
      *
      * @return SmppPdu
      *
@@ -658,7 +662,7 @@ class SmppClient
      *
      * @param smppPdu $pdu - received PDU from SMSC
      *
-     * @return array parsed PDU
+     * @return SmppDeliveryReceipt|SmppSms - (array parsed PDU)
      *
      * @throws SmppException
      * @throws \InvalidArgumentException
@@ -783,9 +787,9 @@ class SmppClient
         $this->sequenceNumber = 1;
 
         if ($this->mode == 'receiver') {
-            $this->bindReceiver($this->login, $this->pass);
+            $this->bindReceiver($this->login, $this->pass, $this->systemType);
         } else {
-            $this->bindTransmitter($this->login, $this->pass);
+            $this->bindTransmitter($this->login, $this->pass, $this->systemType);
         }
     }
 
@@ -795,7 +799,7 @@ class SmppClient
      * @param int    $id      - command ID
      * @param string $pduBody - PDU body
      *
-     * @return SmppPdu
+     * @return SmppPdu|bool
      *
      * @throws SmppException
      */
@@ -804,6 +808,7 @@ class SmppClient
         if (!$this->transport->isOpen()) {
             return false;
         }
+
         $pdu = new SmppPdu($id, 0, $this->sequenceNumber, $pduBody);
         $this->sendPDU($pdu);
         $response = $this->readPDU_resp($this->sequenceNumber, $pdu->id);
@@ -852,7 +857,7 @@ class SmppClient
      * @param int $seqNumber - PDU sequence number
      * @param int $commandId - PDU command ID
      *
-     * @return SmppPdu
+     * @return SmppPdu|bool
      *
      * @throws SmppException
      */
@@ -896,7 +901,7 @@ class SmppClient
     /**
      * Reads incoming PDU from SMSC.
      *
-     * @return SmppPdu
+     * @return SmppPdu|bool
      *
      * @throws \RuntimeException
      */
