@@ -3,7 +3,7 @@
 namespace Kronas\SmppClientBundle\SmppCore;
 
 /**
- * Primitive class to represent SMPP optional params, also know as TLV (Tag-Length-Value) params
+ * Primitive class to represent SMPP optional params, also know as TLV (Tag-Length-Value) params.
  *
  * @author OnlineCity <hd@onlinecity.dk>
  */
@@ -59,15 +59,14 @@ class SmppTag
     const ITS_REPLY_TYPE = 0x1380;
     const ITS_SESSION_INFO = 0x1383;
 
-
     /**
      * Construct a new TLV param.
      * The value must either be pre-packed with pack(), or a valid pack-type must be specified.
      *
-     * @param integer $id
-     * @param string  $value
-     * @param integer $length
-     * @param string  $type
+     * @param int    $id
+     * @param string $value
+     * @param int    $length
+     * @param string $type
      */
     public function __construct($id, $value, $length = null, $type = 'a*')
     {
@@ -78,7 +77,8 @@ class SmppTag
     }
 
     /**
-     * Get the TLV packed into a binary string for transport
+     * Get the TLV packed into a binary string for transport.
+     *
      * @return string
      */
     public function getBinary()

@@ -1,9 +1,0 @@
-services:
-    kronas_smpp_client.transmitter:
-        class: Kronas\SmppClientBundle\Service\SmppTransmitter
-        arguments:
-            - [['%kronas_smpp_client.host%'], '%kronas_smpp_client.port%', '%kronas_smpp_client.socket_timeout%']
-            - '%kronas_smpp_client.login%'
-            - '%kronas_smpp_client.password%'
-            - '%kronas_smpp_client.signature%'
-            - '%kronas_smpp_client.debug%'

@@ -3,37 +3,31 @@
 namespace Kronas\SmppClientBundle\Transport;
 
 /**
- * Interface TransportInterface
+ * Interface TransportInterface.
  */
 interface TransportInterface
 {
-    /**
-     * @return null
-     */
     public function open();
 
-    /**
-     * @return null
-     */
     public function close();
 
     /**
-     * @param integer $length
+     * @param int $length
      *
      * @return null|string
      */
     public function read($length);
 
     /**
-     * @param integer $length
+     * @param int $length
      *
      * @return null|string
      */
     public function readAll($length);
 
     /**
-     * @param mixed   $buffer
-     * @param integer $length
+     * @param mixed $buffer
+     * @param int   $length
      */
     public function write($buffer, $length);
-} 
+}

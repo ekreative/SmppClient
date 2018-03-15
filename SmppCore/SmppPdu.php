@@ -3,7 +3,7 @@
 namespace Kronas\SmppClientBundle\SmppCore;
 
 /**
- * Primitive class for encapsulating PDUs
+ * Primitive class for encapsulating PDUs.
  *
  * @author OnlineCity <hd@onlinecity.dk>
  */
@@ -15,12 +15,12 @@ class SmppPdu
     public $body;
 
     /**
-     * Create new generic PDU object
+     * Create new generic PDU object.
      *
-     * @param integer $id
-     * @param integer $status
-     * @param integer $sequence
-     * @param string  $body
+     * @param int    $id
+     * @param int    $status
+     * @param int    $sequence
+     * @param string $body
      */
     public function __construct($id, $status, $sequence, $body)
     {

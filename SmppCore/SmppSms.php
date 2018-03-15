@@ -2,11 +2,9 @@
 
 namespace Kronas\SmppClientBundle\SmppCore;
 
-use Kronas\SmppClientBundle\SmppCore\SmppAddress;
-
 /**
- * Primitive type to represent SMSes
- * 
+ * Primitive type to represent SMSes.
+ *
  * @author OnlineCity <hd@onlinecity.dk>
  */
 class SmppSms extends SmppPdu
@@ -29,26 +27,26 @@ class SmppSms extends SmppPdu
     public $replaceIfPresentFlag;
 
     /**
-     * Construct a new SMS
+     * Construct a new SMS.
      *
-     * @param integer       $id
-     * @param integer       $status
-     * @param integer       $sequence
-     * @param string        $body
-     * @param string        $serviceType
-     * @param SmppAddress   $source
-     * @param SmppAddress   $destination
-     * @param integer       $esmClass
-     * @param integer       $protocolId
-     * @param integer       $priorityFlag
-     * @param integer       $registeredDelivery
-     * @param integer       $dataCoding
-     * @param string        $message
-     * @param array         $tags
-     * @param string        $scheduleDeliveryTime
-     * @param string        $validityPeriod
-     * @param integer       $smDefaultMsgId
-     * @param integer       $replaceIfPresentFlag
+     * @param int         $id
+     * @param int         $status
+     * @param int         $sequence
+     * @param string      $body
+     * @param string      $serviceType
+     * @param SmppAddress $source
+     * @param SmppAddress $destination
+     * @param int         $esmClass
+     * @param int         $protocolId
+     * @param int         $priorityFlag
+     * @param int         $registeredDelivery
+     * @param int         $dataCoding
+     * @param string      $message
+     * @param array       $tags
+     * @param string      $scheduleDeliveryTime
+     * @param string      $validityPeriod
+     * @param int         $smDefaultMsgId
+     * @param int         $replaceIfPresentFlag
      */
     public function __construct($id,
                                 $status,
@@ -64,10 +62,10 @@ class SmppSms extends SmppPdu
                                 $dataCoding,
                                 $message,
                                 $tags,
-                                $scheduleDeliveryTime=null,
-                                $validityPeriod=null,
-                                $smDefaultMsgId=null,
-                                $replaceIfPresentFlag=null)
+                                $scheduleDeliveryTime = null,
+                                $validityPeriod = null,
+                                $smDefaultMsgId = null,
+                                $replaceIfPresentFlag = null)
     {
         parent::__construct($id, $status, $sequence, $body);
         $this->serviceType = $serviceType;
@@ -85,5 +83,4 @@ class SmppSms extends SmppPdu
         $this->smDefaultMsgId = $smDefaultMsgId;
         $this->replaceIfPresentFlag = $replaceIfPresentFlag;
     }
-
 }
