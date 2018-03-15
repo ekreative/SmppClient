@@ -1,7 +1,7 @@
 {
-    "name": "kronas/smpp-client-bundle",
-    "type": "symfony-bundle",
-    "description": "Symfony SMPP Client Bundle",
+    "name": "ekreative/smpp-client",
+    "type": "library",
+    "description": "SMPP Client",
     "keywords": ["Send SMS via SMPP"],
     "homepage": "https://github.com/kronas/SmppClientBundle",
     "license": "MIT",
